@@ -1,18 +1,21 @@
 import streamlit as st
-from supabase import create_client, Client
+from supabase import create_client
 import pandas as pd
 from datetime import datetime
 import plotly.express as px
 
-# ====================== CONFIG ======================
-st.set_page_config(page_title="Shared To-Do vs", layout="wide")
+st.set_page_config(page_title="Shared To-Do", layout="wide")
 st.title("🚀 Shared To-Do List - You vs Friend")
 
-# Replace with your Supabase details
-SUPABASE_URL = "https://syiuppxkqeronqnaowak.supabase.co"      
-SUPABASE_KEY = "sb_publishable_wgxeRXUUWZWlQmp6B5hyRw_fWu-tvjb"                  
+# ================== Supabase Connection ==================
+SUPABASE_URL = st.secrets.get("SUPABASE_URL", "https://your-project.supabase.co")
+SUPABASE_KEY = st.secrets.get("SUPABASE_KEY", "your-anon-key")
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+@st.cache_resource
+def init_supabase():
+    return create_client(SUPABASE_URL, SUPABASE_KEY)
+
+supabase = init_supabase()
 
 if "current_user" not in st.session_state:
     st.session_state.current_user = None
